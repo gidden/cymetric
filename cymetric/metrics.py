@@ -93,6 +93,22 @@ def metric(name=None, depends=NotImplemented, schema=NotImplemented):
 # The actual metrics
 #
 
+_deps = [
+    ('Resources', ('SimId', 'QualId', 'ResourceId'), 'Quantity'), 
+    ('Transactions', ('SimId', 'SenderId', 'Time'), 'ResourceId'), 
+    ('Agents', ('SimId', 'AgentId'), 'Prototype'), 
+]
+
+_schema = (('SimId', ts.UUID), ('Prototype', ts.INT), 
+           ('Time', ts.INT), ('Quantity', ts.DOUBLE))
+
+@metric(name='Sent', depends=_deps, schema=_schema)
+def sent(series):
+    tup = (x.reset_index() for x in series)
+    x = pd.merge(*tup, on=[], how='inner').set_index([x[0] for x in _schema])
+
+del _deps, _schema
+
 # Material Mass (quantity * massfrac)
 _matdeps = [('Resources', ('SimId', 'QualId', 'ResourceId', 'ObjId', 'TimeCreated'), 
                 'Quantity'),
