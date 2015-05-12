@@ -8,10 +8,10 @@ msg=`git log --pretty=oneline -1`
 echo "Building commit: $msg" 
 
 # setup conda recipe to use develop cyclus
-# sed -i  "s/- cyclus/- cyclus 0.0/g" conda-recipe/meta.yaml
+sed -i  "s/- cyclus/- cyclus 0.0/g" conda-recipe/meta.yaml
 
 # build
 conda build --no-test conda-recipe
 
 # install
-conda install --use-local cyclus=0.0
+conda install --use-local cymetric=0.0
