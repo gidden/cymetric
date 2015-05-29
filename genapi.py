@@ -75,17 +75,15 @@ class TypeSystem(object):
         self.cpptypes = cpptypes = {}
         self.ranks = ranks = {}
         self.ids = ids = {}
-        i = 0
-        for row in table:
+        for i, row in enumerate(table):
             t = row[cpptype]
             types.add(t)
             ids[t] = i
-            i += 1
             cpptypes[t] = row[cpptype]
             ranks[t] = row[rank]
         self.norms = {t: parse_template(c) for t, c in cpptypes.items()}
         self.dbtypes = sorted(types, key=lambda t: ids[t])
-        print(cpptypes)
+        print(self.dbtypes)
         
         # caches
         self._cython_cpp_name = {}
@@ -105,6 +103,7 @@ class TypeSystem(object):
 
     def cython_type(self, t):
         """Returns the Cython spelling of the type."""
+        #print(t)
         if t in self._cython_types:
             return self._cython_types[t]
         if isinstance(t, str_types):
@@ -190,8 +189,8 @@ class TypeSystem(object):
             Return expression.
         """
         n = self.norms.get(t, t)
+        #print(n, self.cython_type(t))
         ctx = {'type': self.cython_type(t), 'var': x, 'nptypes': []}
-        print(ctx)
         if n in self._to_py_converters:
             # basic type or str
             n0 = ()
@@ -213,6 +212,7 @@ class TypeSystem(object):
             dbe_i = map(Indenter, dbe_i)
             ctx[targ+'decl'], ctx[targ+'body'], ctx[targ+'expr'] = dbe_i
             ctx['nptypes'].append(self.nptype(n_i))
+        #print(ctx)
         decl = decl.format(**ctx)
         body = body.format(**ctx)
         expr = expr.format(**ctx)
@@ -880,9 +880,9 @@ def typesystem_pxd(ts, ns):
 # CLI
 #
 
-DBTYPES_JS_URL = 'http://fuelcycle.org/arche/dbtypes.js'
-DBTYPES_JS_URL = 'https://raw.githubusercontent.com/cyclus/cyclus.github.com/355dfbec0b408e7aa4b00bd673affc65b7c9090d/source/arche/dbtypes.js'
-
+# DBTYPES_JS_URL = 'http://fuelcycle.org/arche/dbtypes.js'
+# DBTYPES_JS_URL = 'https://raw.githubusercontent.com/cyclus/cyclus.github.com/355dfbec0b408e7aa4b00bd673affc65b7c9090d/source/arche/dbtypes.js'
+DBTYPES_JS_URL = 'https://raw.githubusercontent.com/gidden/cyclus.github.com/testing/source/arche/dbtypes.js'
 
 def parse_args(argv):
     """Parses typesystem arguments for code generation."""
