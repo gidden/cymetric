@@ -213,15 +213,15 @@ def main_body(cmake_args, make_args):
     print('Generating API Bindings...')
     genapi.main([])
 
-    cmake_cmd = cmake_cli(cmake_args)
-    rtn = safe_call(cmake_cmd, cwd='build')
+    # cmake_cmd = cmake_cli(cmake_args)
+    # rtn = safe_call(cmake_cmd, cwd='build')
 
-    rtn = safe_call(['make'] + make_args, cwd='build')
+    # rtn = safe_call(['make'] + make_args, cwd='build')
 
-    cwd = os.getcwd()
-    os.chdir('build')
-    setup()
-    os.chdir(cwd)
+    # cwd = os.getcwd()
+    # os.chdir('build')
+    # setup()
+    # os.chdir(cwd)
 
 
 def final_message(success=True):
