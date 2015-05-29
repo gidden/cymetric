@@ -69,22 +69,24 @@ class TypeSystem(object):
         self.cycver = cycver
         self.verstr = verstr = 'v{0}.{1}'.format(*cycver)
         self.cols = cols = {x: i for i, x in enumerate(table[0])}
-        id, name, version = cols['id'], cols['name'], cols['version']
-        cpptype, rank = cols['C++ type'], cols['shape rank']
+        cpptype, rank, version = cols['C++ type'], cols['shape rank'], cols['version']
         self.table = table = [row for row in table if row[version] == verstr]
         self.types = types = set()
-        self.ids = ids = {}
         self.cpptypes = cpptypes = {}
         self.ranks = ranks = {}
+        self.ids = ids = {}
+        i = 0
         for row in table:
-            t = row[name]
+            t = row[cpptype]
             types.add(t)
-            ids[t] = row[id]
+            ids[t] = i
+            i += 1
             cpptypes[t] = row[cpptype]
             ranks[t] = row[rank]
         self.norms = {t: parse_template(c) for t, c in cpptypes.items()}
         self.dbtypes = sorted(types, key=lambda t: ids[t])
-
+        print(cpptypes)
+        
         # caches
         self._cython_cpp_name = {}
         self._cython_types = dict(CYTHON_TYPES)
@@ -189,6 +191,7 @@ class TypeSystem(object):
         """
         n = self.norms.get(t, t)
         ctx = {'type': self.cython_type(t), 'var': x, 'nptypes': []}
+        print(ctx)
         if n in self._to_py_converters:
             # basic type or str
             n0 = ()
